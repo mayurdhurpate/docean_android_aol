@@ -29,6 +29,6 @@ class Message(models.Model):
     message_id = models.CharField(max_length=1000,null=True,blank=True)
     title = models.CharField(max_length=1000,null=True,blank=True)
     def __str__(self):
-                return "%s %s %s %s " % (self.message,self.sender,self.token,self.message_id)
+                return "%s %s" % (self.sender,self.message)
     def __unicode__(self):
-                return "%s %s %s %s" % (self.message,self.sender,self.token,self.message_id)
+                return "%s %s" % (self.sender,self.message)
