@@ -52,6 +52,7 @@ def message_receive(request):
         try:
             x = User.objects.get(email=request.POST["email"])
         except:
+            data1 = {}
             data1["action"]="broadcast_msg"
             data1["error"]="true"
             return HttpResponse(json.dumps(data1), content_type='application/json')
