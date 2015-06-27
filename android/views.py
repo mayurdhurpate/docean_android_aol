@@ -31,7 +31,7 @@ def register(request):
     if request.method == "POST" and request.POST['passkey'] == "hellolastry":
         try:
             x = User.objects.get(email=request.POST["email"]
-            return HttpResponse(json.dumps({"message":"User Registered"}),content_ttent_type="application/json")
+            return HttpResponse(json.dumps({"message":"User Registered"}),content_type="application/json")
         except:
             u = User()
             u.name = request.POST["name"]
