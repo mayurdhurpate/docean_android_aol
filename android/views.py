@@ -30,7 +30,8 @@ def home(title,text,sender):
 def register(request):
     if request.method == "POST" and request.POST['passkey'] == "hellolastry":
         try:
-            x = User.objects.get(email=request.POST["email"]
+            x = User.objects.get(email=request.POST["email"])
+            
             return HttpResponse(json.dumps({"message":"User Registered"}),content_type="application/json")
         except:
             u = User()
@@ -53,6 +54,7 @@ def message_receive(request):
         try:
             x = User.objects.get(email=request.POST["email"])
         except:
+            data1 = {}
             data1["action"]="broadcast_msg"
             data1["error"]="true"
             return HttpResponse(json.dumps(data1), content_type='application/json')
