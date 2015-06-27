@@ -1,0 +1,4 @@
+*~
+*.py[c|m]
+envdj/*
+*.sqlite3
