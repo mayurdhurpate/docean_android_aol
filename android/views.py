@@ -30,19 +30,18 @@ def home(title,text,sender):
 def register(request):
     if request.method == "POST" and request.POST['passkey'] == "hellolastry":
         try:
-            x = User.objects.get(email=request.POST["email"]
-            return HttpResponse(json.dumps({"message":"User Registered"}),content_type="application/json")
+            u = User.objects.get(email=request.POST["email"])
         except:
             u = User()
-            u.name = request.POST["name"]
-            u.token = request.POST["token"]
-            u.email = request.POST["email"]
-            u.phone_no = request.POST["phone_no"]
-            u.image_url = request.POST["image_url"]
-            u.social_id = request.POST["social_id"]
-            u.role = ""
-            u.save()
-            return HttpResponse(json.dumps({"message":"User Registered"}),content_type="application/json")
+        u.name = request.POST["name"]
+        u.token = request.POST["token"]
+        u.email = request.POST["email"]
+        u.phone_no = request.POST["phone_no"]
+        u.image_url = request.POST["image_url"]
+        u.social_id = request.POST["social_id"]
+        u.role = ""
+        u.save()
+        return HttpResponse(json.dumps({"message":"User Registered"}),content_type="application/json")
     else:
         return HttpResponse("Validation Failed")
 
@@ -68,7 +67,9 @@ def message_receive(request):
         data["error"]="false"
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
-        return HttpResponse("Validation Failed")
+        data["action"]="broadcast_msg"
+        data["error"]="true"
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 @csrf_exempt
 def contacts_data(request):
