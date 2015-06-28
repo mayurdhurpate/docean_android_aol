@@ -8,21 +8,17 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
-def home(title,text,sender):
+def home(title,text,sender,msg_id):
     uids = []
     users = User.objects.all().order_by('-id')
     for user in users:
         uids.append(user.token)
-
     notis = Noti.objects.all().order_by('-id')
     noti = notis[0]
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
-    payload = {"data":{"message1":text,"title":title,"sender":sender},"registration_ids":uids}
+    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id},"registration_ids":uids}
     headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
-    
-    print payload
-    print headers
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return json.loads(r.content)
 
@@ -61,7 +57,7 @@ def message_receive(request):
         msg.message = request.POST['bmsg']
         msg.token = request.POST["token"]
         msg.title = request.POST["bmsg_title"]
-        data = home(msg.title,msg.message,msg.sender)
+        data = home(msg.title,msg.message,msg.sender,msg.id)
         msg.message_id = data['multicast_id']
         msg.save()
         data["action"]="broadcast_msg"
@@ -94,6 +90,7 @@ def message_data(request):
             msg_dict = {}
             msg_dict["sender"] = message.sender
             msg_dict["message"] = message.message
+            msg_dict["id"] = message.id
             data["messages"].append(msg_dict)
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
