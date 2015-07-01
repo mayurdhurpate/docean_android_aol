@@ -28,6 +28,7 @@ class Message(models.Model):
     token = models.CharField(max_length=1000)
     message_id = models.CharField(max_length=1000,null=True,blank=True)
     title = models.CharField(max_length=1000,null=True,blank=True)
+    created = models.DateTimeField(null=True,blank=True)
     def __str__(self):
                 return "%s %s" % (self.sender,self.message)
     def __unicode__(self):
