@@ -5,7 +5,7 @@ import json
 from django.shortcuts import render
 from android.models import *
 from django.views.decorators.csrf import csrf_exempt
-
+from django.utils import timezone
 # Create your views here.
 
 def home(title,text,sender,msg_id):
@@ -57,6 +57,8 @@ def message_receive(request):
         msg.message = request.POST['bmsg']
         msg.token = request.POST["token"]
         msg.title = request.POST["bmsg_title"]
+        msg.created = timezone.now()
+        msg.save()
         data = home(msg.title,msg.message,msg.sender,msg.id)
         msg.message_id = data['multicast_id']
         msg.save()
