@@ -29,6 +29,8 @@ def register(request):
             u = User.objects.get(email=request.POST["email"])
         except:
             u = User()
+
+
         u.name = request.POST["name"]
         u.token = request.POST["token"]
         u.email = request.POST["email"]
@@ -36,8 +38,12 @@ def register(request):
         u.image_url = request.POST["image_url"]
         u.social_id = request.POST["social_id"]
         u.role = ""
+
+        if(u.email=="null"){
+            return HttpResponse(json.dumps({"message":"Null Data","success":"false"}),content_type="application/json") 
+        }
         u.save()
-        return HttpResponse(json.dumps({"message":"User Registered"}),content_type="application/json")
+        return HttpResponse(json.dumps({"message":"User Registered","success":"true"}),content_type="application/json")
     else:
         return HttpResponse("Validation Failed")
 
