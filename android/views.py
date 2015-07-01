@@ -76,6 +76,10 @@ def contacts_data(request):
         for user in users:
             user_dict = {}
             user_dict["name"] = user.name
+            user_dict["email"] = user.email
+            user_dict["phone_no"] = user.phone_no
+            user_dict["image_url"] = user.image_url
+            user_dict["role"] = user.role
             data["contacts"].append(user_dict)
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
