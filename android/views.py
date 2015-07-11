@@ -123,7 +123,7 @@ def add_topic(request):
         uids = []
         users = User.objects.all().order_by('-id')
         for user in users:
-        uids.append(user.token)
+            uids.append(user.token)
         notis = Noti.objects.all().order_by('-id')
         noti = notis[0]
         url = 'https://gcm-http.googleapis.com/gcm/send'
