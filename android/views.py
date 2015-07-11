@@ -8,16 +8,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 # Create your views here.
 
-def home(title,text,sender,msg_id,topic):
+def home(title,text,sender,msg_id,topic,created):
     uids = []
     users = User.objects.all().order_by('-id')
     for user in users:
         uids.append(user.token)
     notis = Noti.objects.all().order_by('-id')
     noti = notis[0]
+    timeshow = str(created.hour)+":"+str(created.minute)
+    dateshow = str(created.day)+"-"+str(created.month)+"-"+str(created.year)
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
-    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message"},"registration_ids":uids}
+    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow},"registration_ids":uids}
     headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return json.loads(r.content)
@@ -66,7 +68,7 @@ def message_receive(request):
         msg.topic = request.POST['topic']
         msg.created = timezone.now()
         msg.save()
-        data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic)
+        data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created)
         msg.message_id = data['multicast_id']
         msg.save()
         data["action"]="broadcast_msg"
@@ -105,6 +107,8 @@ def message_data(request):
             msg_dict["message"] = message.message
             msg_dict["id"] = message.id
             msg_dict["topic"] = message.topic
+            msg_dict["time"] = str(created.hour)+":"+str(created.minute)
+            msg_dict["date"] = str(created.day)+"-"+str(created.month)+"-"+str(created.year)
             data["messages"].append(msg_dict)
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
