@@ -108,8 +108,8 @@ def message_data(request):
             msg_dict["message"] = message.message
             msg_dict["id"] = message.id
             msg_dict["topic"] = message.topic
-            msg_dict["time"] = str(created.hour)+":"+str(created.minute)
-            msg_dict["date"] = str(created.day)+"-"+str(created.month)+"-"+str(created.year)
+            msg_dict["time"] = str(message.created.hour)+":"+str(message.created.minute)
+            msg_dict["date"] = str(message.created.day)+"-"+str(message.created.month)+"-"+str(message.created.year)
             data["messages"].append(msg_dict)
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
@@ -123,7 +123,7 @@ def add_topic(request):
         uids = []
         users = User.objects.all().order_by('-id')
         for user in users:
-        uids.append(user.token)
+            uids.append(user.token)
         notis = Noti.objects.all().order_by('-id')
         noti = notis[0]
         url = 'https://gcm-http.googleapis.com/gcm/send'
