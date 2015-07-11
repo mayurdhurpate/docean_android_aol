@@ -29,7 +29,9 @@ class Message(models.Model):
     message_id = models.CharField(max_length=1000,null=True,blank=True)
     title = models.CharField(max_length=1000,null=True,blank=True)
     created = models.DateTimeField(null=True,blank=True)
+    topic = models.CharField(max_length=100,null=True,blank=True)
+
     def __str__(self):
-                return "%s %s" % (self.sender,self.message)
+                return "%s %s %s" % (self.sender,self.topic,self.message)
     def __unicode__(self):
-                return "%s %s" % (self.sender,self.message)
+                return "%s %s %s" % (self.sender,self.topic,self.message)
