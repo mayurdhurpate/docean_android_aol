@@ -17,6 +17,7 @@ def home(title,text,sender,msg_id,topic,created):
     noti = notis[0]
     timeshow = str(created.hour)+":"+str(created.minute)
     dateshow = str(created.day)+"-"+str(created.month)+"-"+str(created.year)
+    
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
     payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow},"registration_ids":uids}
@@ -114,5 +115,24 @@ def message_data(request):
     else:
         return HttpResponse("Validation Failed")
 
+@csrf_exempt
+def add_topic(request):
+    if request.method == 'POST' and request.POST['passkey'] == 'hellolastry':
+        topic = request.POST["topic"]
 
-
+        uids = []
+        users = User.objects.all().order_by('-id')
+        for user in users:
+        uids.append(user.token)
+        notis = Noti.objects.all().order_by('-id')
+        noti = notis[0]
+        url = 'https://gcm-http.googleapis.com/gcm/send'
+        payload = {"data":{"topic":topic,"type":"add_topic"},"registration_ids":uids}
+        headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
+        r = requests.post(url, data=json.dumps(payload), headers=headers)
+        data = json.loads(r.content)
+        data["action"]="add_topic"
+        data["error"]="false"
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    else:
+        return HttpResponse("Validation Failed") 

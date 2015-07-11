@@ -21,6 +21,8 @@ admin.autodiscover()
 urlpatterns = [
 	url(r'^register/$','android.views.register',name='register'),
 	url(r'^broadcastreceive/$','android.views.message_receive',name='message_receive'),
+    url(r'^broadcastreceive/$','android.views.message_receive',name='message_receive'),
+    url(r'^add_topic/$','android.views.add_topic',name='add_topic'),
     url(r'^contacts/$','android.views.contacts_data',name='contacts_data'),
     url(r'^messages/$','android.views.message_data',name='message_data'),
 	url(r'^admin/', include(admin.site.urls)),
