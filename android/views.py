@@ -17,7 +17,7 @@ def home(title,text,sender,msg_id,topic):
     noti = notis[0]
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
-    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic},"registration_ids":uids}
+    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message"},"registration_ids":uids}
     headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return json.loads(r.content)
