@@ -39,9 +39,9 @@ def register(request):
         u.social_id = request.POST["social_id"]
         u.role = ""
 
-        if(u.email=="null"){
+        if(u.email=="null"):
             return HttpResponse(json.dumps({"message":"Null Data","success":"false"}),content_type="application/json") 
-        }
+        
         u.save()
         return HttpResponse(json.dumps({"message":"User Registered","success":"true"}),content_type="application/json")
     else:
