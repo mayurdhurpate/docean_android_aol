@@ -108,6 +108,7 @@ def message_data(request):
             msg_dict["message"] = message.message
             msg_dict["id"] = message.id
             msg_dict["topic"] = message.topic
+            msg_dict["title"] = message.title
             msg_dict["time"] = str(message.created.hour)+":"+str(message.created.minute)
             msg_dict["date"] = str(message.created.day)+"-"+str(message.created.month)+"-"+str(message.created.year)
             data["messages"].append(msg_dict)
