@@ -73,6 +73,8 @@ def message_receive(request):
         msg.token = request.POST["token"]
         msg.title = request.POST["bmsg_title"]
         msg.topic = request.POST['topic']
+        if request.POST["image"] != "":
+            msg.url = add_pic(request.POST["image"])
         msg.created = timezone.now()
         msg.save()
         data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created)
@@ -110,6 +112,7 @@ def message_data(request):
         messages = Message.objects.all().order_by('-id')
         for message in messages:
             msg_dict = {}
+            msg_dict["url"] = message.url
             msg_dict["sender"] = message.sender
             msg_dict["message"] = message.message
             msg_dict["id"] = message.id
@@ -145,18 +148,10 @@ def add_topic(request):
         return HttpResponse("Validation Failed") 
 
 @csrf_exempt
-def image_upload(request):
-    if request.method == 'POST' and request.POST['passkey'] == "hellolastry":
-        pic = cStringIO.StringIO()
-        image_string = cStringIO.StringIO(base64.b64decode(request.POST['image']))
-        image = Image.open(image_string)
-        image.save(pic, image.format, quality = 100)
-        pic.seek(0)
-        x = datetime.datetime.now()
-        ttt = x.strftime('%Y%m%d_%H%M%S')
-        client = dropbox.client.DropboxClient('9ZP72jucDXQAAAAAAAABfWkVODGSeqPl0N2oPaiQpCuTHYh9JMyJfE5ZKXFvEy58')
-        response = client.put_file("aol/" +ttt +".jpg",  pic)
-        url = ''
-        url = client.share(response['path'], short_url=False)['url'].replace('www.dropbox.com','dl.dropboxusercontent.com')
-        print url
-        return HttpResponse(json.dumps(url), content_type='application/json')
+def add_pic(image):
+    url = "http://datashare.herokuapp.com/android/photobooth"
+    payload = {"image":image,"email":"aol","passkey":"14956937dc83088"}
+    r = requests.post(url, data=json.dumps(payload))
+    img_url = json.loads(r.content)
+    return img_url
+
