@@ -14,7 +14,7 @@ import datetime
 import dropbox
 # Create your views here.
 
-def home(title,text,sender,msg_id,topic,created):
+def home(title,text,sender,msg_id,topic,created,url):
     uids = []
     users = User.objects.all().order_by('-id')
     for user in users:
@@ -26,7 +26,7 @@ def home(title,text,sender,msg_id,topic,created):
     
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
-    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow},"registration_ids":uids}
+    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow,"url":url},"registration_ids":uids}
     headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return json.loads(r.content)
@@ -75,9 +75,11 @@ def message_receive(request):
         msg.topic = request.POST['topic']
         if request.POST["image"] != "":
             msg.url = add_pic(request.POST["image"])
+        else:
+            msg.url = ""
         msg.created = timezone.now()
         msg.save()
-        data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created)
+        data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created,msg.url)
         msg.message_id = data['multicast_id']
         msg.save()
         data["action"]="broadcast_msg"
