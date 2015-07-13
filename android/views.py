@@ -11,6 +11,7 @@ import django.core.files
 from PIL import Image
 import cStringIO
 import datetime
+import dropbox
 # Create your views here.
 
 def home(title,text,sender,msg_id,topic,created):
