@@ -155,7 +155,7 @@ def image_upload(request):
         x = datetime.datetime.now()
         ttt = x.strftime('%Y%m%d_%H%M%S')
         client = dropbox.client.DropboxClient('9ZP72jucDXQAAAAAAAABfWkVODGSeqPl0N2oPaiQpCuTHYh9JMyJfE5ZKXFvEy58')
-        response = client.put_file("aol/" +ttt + image.format,  pic)
+        response = client.put_file("aol/" +ttt +"." +image.format,  pic)
         url = ''
         url = client.share(response['path'], short_url=False)['url'].replace('www.dropbox.com','dl.dropboxusercontent.com')
         print url
