@@ -6,6 +6,11 @@ from django.shortcuts import render
 from android.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+import base64
+import django.core.files
+from PIL import Image
+import cStringIO
+import datetime
 # Create your views here.
 
 def home(title,text,sender,msg_id,topic,created):
