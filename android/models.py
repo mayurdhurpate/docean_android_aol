@@ -30,6 +30,7 @@ class Message(models.Model):
     title = models.CharField(max_length=1000,null=True,blank=True)
     created = models.DateTimeField(null=True,blank=True)
     topic = models.CharField(max_length=100,null=True,blank=True)
+    url = models.CharField(max_length=1000,null=True,blank=True)
 
     def __str__(self):
                 return "%s %s %s" % (self.sender,self.topic,self.message)

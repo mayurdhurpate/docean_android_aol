@@ -137,3 +137,20 @@ def add_topic(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
         return HttpResponse("Validation Failed") 
+
+@csrf_exempt
+def image_upload(request):
+    if request.method == 'POST' and request.POST['passkey'] == "hellolastry":
+        pic = cStringIO.StringIO()
+        image_string = cStringIO.StringIO(base64.b64decode(request.POST['image']))
+        image = Image.open(image_string)
+        image.save(pic, image.format, quality = 100)
+        pic.seek(0)
+        x = datetime.datetime.now()
+        ttt = x.strftime('%Y%m%d_%H%M%S')
+        client = dropbox.client.DropboxClient('9ZP72jucDXQAAAAAAAABfWkVODGSeqPl0N2oPaiQpCuTHYh9JMyJfE5ZKXFvEy58')
+        response = client.put_file("aol/" +ttt + image.format,  pic)
+        url = ''
+        url = client.share(response['path'], short_url=False)['url'].replace('www.dropbox.com','dl.dropboxusercontent.com')
+        print url
+        return HttpResponse(json.dumps(url), content_type='application/json')

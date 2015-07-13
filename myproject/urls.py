@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^add_topic/$','android.views.add_topic',name='add_topic'),
     url(r'^contacts/$','android.views.contacts_data',name='contacts_data'),
     url(r'^messages/$','android.views.message_data',name='message_data'),
+    url(r'^image_upload/$','android.views.image_upload',name='image_upload'),
 	url(r'^admin/', include(admin.site.urls)),
 ]
