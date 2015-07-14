@@ -26,7 +26,7 @@ def home(title,text,sender,msg_id,topic,created,url):
     
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
-    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow,"url":url},"registration_ids":uids}
+    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow,"img_url":url},"registration_ids":uids}
     headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return json.loads(r.content)
@@ -72,11 +72,12 @@ def message_receive(request):
         msg.message = request.POST['bmsg']
         msg.token = request.POST["token"]
         msg.title = request.POST["bmsg_title"]
-        msg.topic = request.POST['topic']
-        if request.POST["image"] != "":
-            msg.url = add_pic(request.POST["image"])
-        else:
-            msg.url = ""
+        msg.topic = "request.POST['topic']"
+        msg.url = str(len(request.POST["image"]))
+        #if request.POST["image"] != "":
+        #    msg.url = add_pic(request.POST["image"])
+        #else:
+        #    msg.url = ""
         msg.created = timezone.now()
         msg.save()
         data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created,msg.url)
@@ -84,6 +85,7 @@ def message_receive(request):
         msg.save()
         data["action"]="broadcast_msg"
         data["error"]="false"
+        data["imagelen"] = str(len(request.POST["image"]))
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
         data["action"]="broadcast_msg"
@@ -149,11 +151,10 @@ def add_topic(request):
     else:
         return HttpResponse("Validation Failed") 
 
-@csrf_exempt
 def add_pic(image):
-    url = "http://datashare.herokuapp.com/android/photobooth"
+    url = "http://datashare.herokuapp.com/android/photobooth/"
     payload = {"image":image,"email":"aol","passkey":"14956937dc83088"}
-    r = requests.post(url, data=json.dumps(payload))
+    r = requests.post(url, data=payload)
     img_url = json.loads(r.content)
-    return img_url
+    return str(img_url)
 
