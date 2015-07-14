@@ -73,11 +73,11 @@ def message_receive(request):
         msg.token = request.POST["token"]
         msg.title = request.POST["bmsg_title"]
         msg.topic = "request.POST['topic']"
-        msg.url = str(len(request.POST["image"]))
-        #if request.POST["image"] != "":
-        #    msg.url = add_pic(request.POST["image"])
-        #else:
-        #    msg.url = ""
+        # msg.url = str(len(request.POST["image"]))
+        if request.POST["image"] != "":
+           msg.url = add_pic(request.POST["image"])
+        else:
+           msg.url = ""
         msg.created = timezone.now()
         msg.save()
         data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created,msg.url)
