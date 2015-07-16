@@ -75,12 +75,13 @@ def message_receive(request):
         msg.title = request.POST["bmsg_title"]
         msg.topic = request.POST['topic']
         #msg.url = request.POST["image"][:10]
+        msg.save()
         if request.POST["image"] != "":
-           msg.url = add_pic(image)[:10]
+           msg.url = add_file(image,str(msg.id))
         else:
            msg.url = ""
         msg.created = timezone.now()
-        msg.save()
+        
         data = home(msg.title,msg.message,msg.sender,msg.id,msg.topic,msg.created,msg.url)
         msg.message_id = data['multicast_id']
         msg.save()
@@ -158,4 +159,14 @@ def add_pic(image):
     r = requests.post(url, data=payload)
     #img_url = json.loads(r.content)
     return r.content
+
+def add_file(image,filename):
+    x = datetime.datetime.now()
+    ttt = x.strftime('%Y%m%d_%H%M%S')
+    client = dropbox.client.DropboxClient('9ZP72jucDXQAAAAAAAABfWkVODGSeqPl0N2oPaiQpCuTHYh9JMyJfE5ZKXFvEy58')
+    response = client.put_file("artofliving_app/" + filename + '_'+ ttt + ".txt",  image)
+    url = ''
+    url = client.share(response['path'], short_url=False)['url'].replace('www.dropbox.com','dl.dropboxusercontent.com')
+    return url
+
 
