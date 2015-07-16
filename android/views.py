@@ -11,10 +11,10 @@ import django.core.files
 from PIL import Image
 import cStringIO
 import datetime
-import dropbox
+#import dropbox
 # Create your views here.
 
-def home(title,text,sender,msg_id,topic,created,url):
+def home(title,text,sender,msg_id,topic,created,img_url):
     uids = []
     users = User.objects.all().order_by('-id')
     for user in users:
@@ -26,7 +26,7 @@ def home(title,text,sender,msg_id,topic,created,url):
     
     url = 'https://gcm-http.googleapis.com/gcm/send'
     #payload = { "notification": {"title": title,"icon":"@drawable/myicon","text": text,"click_action":"MAIN"},"registration_ids" : uids}
-    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow,"img_url":url},"registration_ids":uids}
+    payload = {"data":{"message1":text,"title":title,"sender":sender,"id":msg_id,"topic":topic,"type":"message","time":timeshow,"date":dateshow,"img_url":img_url},"registration_ids":uids}
     headers = {'content-type': 'application/json','Authorization':'key='+noti.api_key}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return json.loads(r.content)
@@ -67,15 +67,16 @@ def message_receive(request):
             data1["action"]="broadcast_msg"
             data1["error"]="true"
             return HttpResponse(json.dumps(data1), content_type='application/json')
+        image = str(request.POST['image'])
         msg = Message()
         msg.sender = request.POST['username']
         msg.message = request.POST['bmsg']
         msg.token = request.POST["token"]
         msg.title = request.POST["bmsg_title"]
-        msg.topic = "request.POST['topic']"
-        # msg.url = str(len(request.POST["image"]))
+        msg.topic = request.POST['topic']
+        #msg.url = request.POST["image"][:10]
         if request.POST["image"] != "":
-           msg.url = add_pic(request.POST["image"])
+           msg.url = add_pic(image)[:10]
         else:
            msg.url = ""
         msg.created = timezone.now()
@@ -155,6 +156,6 @@ def add_pic(image):
     url = "http://datashare.herokuapp.com/android/photobooth/"
     payload = {"image":image,"email":"aol","passkey":"14956937dc83088"}
     r = requests.post(url, data=payload)
-    img_url = json.loads(r.content)
-    return str(img_url)
+    #img_url = json.loads(r.content)
+    return r.content
 
